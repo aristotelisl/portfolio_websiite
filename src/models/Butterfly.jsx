@@ -6,25 +6,85 @@ Source: https://sketchfab.com/3d-models/butterfly-blend-fbx-file-cd8e96659de94fa
 Title: Butterfly - Blend, FBX file
 */
 
-import React, { useRef } from 'react'
-import { useGLTF, useAnimations } from '@react-three/drei'
-import { a } from '@react-spring/three'
-
-import butterflyScene from '../assets/3d/butterfly.glb'
+import React, { useRef, useState, useEffect } from 'react';
+import { useGLTF } from '@react-three/drei';
+import { a, useSpring } from '@react-spring/three';
+import { useFrame, useThree } from '@react-three/fiber';
+import butterflyScene from '../assets/3d/butterfly.glb';
 
 const Butterfly = (props) => {
-  const butterflyRef = useRef()
-  const group = useRef()
-  const { nodes, materials, animations } = useGLTF(butterflyScene)
-  const { actions } = useAnimations(animations, group)
+  const butterflyRef = useRef();
+  const { nodes, materials } = useGLTF(butterflyScene);
+  const { camera } = useThree();
+
+  const [scrollY, setScrollY] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [rotation, setRotation] = useState([0, 0, 0]);
+  const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const handleScroll = (event) => {
+      setScrollY((prev) => prev + event.deltaY * 0.01); // Adjust the multiplier as needed
+    };
+    window.addEventListener('wheel', handleScroll);
+    return () => {
+      window.removeEventListener('wheel', handleScroll);
+    };
+  }, [scrollY]);
+
+  // Use spring for smooth animation
+  const wingSpring = useSpring({
+    wingRotation: Math.sin(scrollY) * 0.5, // Adjust the multiplier as needed
+    config: { tension: 120, friction: 14 },
+  });
+
+  const handlePointerDown = (event) => {
+    setIsDragging(true);
+    setLastMousePosition({ x: event.clientX, y: event.clientY });
+  };
+
+  const handlePointerUp = () => {
+    setIsDragging(false);
+  };
+
+  const handlePointerMove = (event) => {
+    if (!isDragging) return;
+
+    const deltaX = event.clientX - lastMousePosition.x;
+    const deltaY = event.clientY - lastMousePosition.y;
+
+    setRotation((prevRotation) => [
+      prevRotation[0] + deltaY * 0.01,
+      prevRotation[1] + deltaX * 0.01,
+      prevRotation[2],
+    ]);
+
+    setLastMousePosition({ x: event.clientX, y: event.clientY });
+  };
+
+  useEffect(() => {
+    window.addEventListener('pointermove', handlePointerMove);
+    window.addEventListener('pointerup', handlePointerUp);
+    return () => {
+      window.removeEventListener('pointermove', handlePointerMove);
+      window.removeEventListener('pointerup', handlePointerUp);
+    };
+  }, [isDragging, lastMousePosition]);
+
   return (
-    <a.group ref={butterflyRef} {...props}>
+    <a.group
+      ref={butterflyRef}
+      {...props}
+      rotation={rotation}
+      onPointerDown={handlePointerDown}
+    >
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
           <group
             name="6e51c088a3eb46248d26600cc1cfcfdefbx"
             rotation={[Math.PI / 2, 0, 0]}
-            scale={0.01}>
+            scale={0.01}
+          >
             <group name="Object_2">
               <group name="RootNode">
                 <group
@@ -49,7 +109,8 @@ const Butterfly = (props) => {
                   name="Armature"
                   position={[0.151, 2.828, 5.457]}
                   rotation={[-2.545, 0, 0]}
-                  scale={9.692}>
+                  scale={9.692}
+                >
                   <group name="Object_8">
                     <primitive object={nodes._rootJoint} />
                     <skinnedMesh
@@ -88,9 +149,37 @@ const Butterfly = (props) => {
                       rotation={[-0.991, 0, 0]}
                       scale={100}
                     />
+                    <a.group
+                      name="upwwing_L_014"
+                      rotation-z={wingSpring.wingRotation}
+                    >
+                      <primitive object={nodes.upwwing_L_014} />
+                    </a.group>
+                    <a.group
+                      name="upwwing_R_012"
+                      rotation-z={wingSpring.wingRotation.to((val) => -val)}
+                    >
+                      <primitive object={nodes.upwwing_R_012} />
+                    </a.group>
+                    <a.group
+                      name="lowwing_L_015"
+                      rotation-z={wingSpring.wingRotation}
+                    >
+                      <primitive object={nodes.lowwing_L_015} />
+                    </a.group>
+                    <a.group
+                      name="lowwing_R_013"
+                      rotation-z={wingSpring.wingRotation.to((val) => -val)}
+                    >
+                      <primitive object={nodes.lowwing_R_013} />
+                    </a.group>
                   </group>
                 </group>
-                <group name="Sun" position={[-86.859, 43.2, -182.139]} scale={100}>
+                <group
+                  name="Sun"
+                  position={[-86.859, 43.2, -182.139]}
+                  scale={100}
+                >
                   <group name="Object_48" rotation={[Math.PI / 2, 0, 0]}>
                     <group name="Object_49" />
                   </group>
@@ -99,7 +188,8 @@ const Butterfly = (props) => {
                   name="Camera"
                   position={[-146.401, 98.934, -189.305]}
                   rotation={[0, -0.949, -0.342]}
-                  scale={100}>
+                  scale={100}
+                >
                   <group name="Object_51" />
                 </group>
               </group>
@@ -108,7 +198,7 @@ const Butterfly = (props) => {
         </group>
       </group>
     </a.group>
-  )
-}
+  );
+};
 
-export default Butterfly
+export default Butterfly;

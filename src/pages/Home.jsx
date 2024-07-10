@@ -29,11 +29,10 @@ const Home = () => {
       >
         <Suspense fallback={<Loader />}>
           <directionalLight/>
-          <ambientLight/>
-          <pointLight/>
+          <ambientLight intensity={0.2}/>
           <spotLight/>
-          <hemisphereLight/>
-          
+          <hemisphereLight skyColor='#b1e1ff' groundColor="#000000"/>
+
           <Butterfly 
             position={butterflyPosition}
             scale={butterflyScale}
