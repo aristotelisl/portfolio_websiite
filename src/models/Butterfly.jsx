@@ -19,7 +19,7 @@ const Butterfly = (props) => {
 
   const [scrollY, setScrollY] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [rotation, setRotation] = useState([0, 0, 0]);
+  const [rotation, setRotation] = useState([0.5, 0, 0]);
   const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
