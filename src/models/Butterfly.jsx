@@ -3,7 +3,7 @@ import { useGLTF } from '@react-three/drei';
 import { useThree, useFrame } from '@react-three/fiber';
 import butterflyScene from '../assets/3d/butterfly.glb';
 
-const Butterfly = (props) => {
+const Butterfly = ({ flapSpeed, setFlapSpeed, ...props}) => {
   const butterflyRef = useRef();
   const { nodes, materials } = useGLTF(butterflyScene);
   const { camera } = useThree();
@@ -12,18 +12,22 @@ const Butterfly = (props) => {
   const [isDragging, setIsDragging] = useState(false);
   const [rotation, setRotation] = useState([0.5, 0, 0]);
   const [lastMousePosition, setLastMousePosition] = useState({ x: 0, y: 0 });
-  const [flapSpeed, setFlapSpeed] = useState(2); // Initial flap speed
 
   useEffect(() => {
     const handleScroll = (event) => {
-      const newFlapSpeed = Math.max(0, flapSpeed + event.deltaY * -0.001);
+      // Calculate new flap speed in the 0-30 range
+      const newFlapSpeed = Math.min(30, Math.max(0, flapSpeed + event.deltaY * -0.01));
       setFlapSpeed(newFlapSpeed);
+
+      const normalizedFlapSpeed = (newFlapSpeed / 30) * 100;
+
+      console.log(normalizedFlapSpeed)
     };
     window.addEventListener('wheel', handleScroll);
     return () => {
       window.removeEventListener('wheel', handleScroll);
     };
-  }, [flapSpeed]);
+  }, [flapSpeed, setFlapSpeed]);
 
   const handlePointerDown = (event) => {
     setIsDragging(true);

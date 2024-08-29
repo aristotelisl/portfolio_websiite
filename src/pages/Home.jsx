@@ -1,10 +1,12 @@
-import React, { Suspense } from 'react'
+import React, { Suspense, useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Loader from '../components/Loader'
 import Butterfly from '../models/Butterfly'
 import Sky from '../models/Sky'
 
 const Home = () => {
+
+  const [flapSpeed, setFlapSpeed] = useState(15);  //Set initial flap speed
 
   const adjustButterflyForScreenSize = () => {
     let screenScale = null
@@ -37,6 +39,8 @@ const Home = () => {
             position={butterflyPosition}
             scale={butterflyScale}
             rotation={butterflyRotation}
+            flapSpeed={flapSpeed}
+            setFlapSpeed={setFlapSpeed}
           />
         </Suspense>
       </Canvas>
