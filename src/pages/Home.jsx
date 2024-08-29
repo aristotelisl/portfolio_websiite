@@ -1,12 +1,13 @@
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Loader from '../components/Loader'
 import Butterfly from '../models/Butterfly'
 import Sky from '../models/Sky'
 
 const Home = () => {
-
-  const [flapSpeed, setFlapSpeed] = useState(15);  //Set initial flap speed
+  const [flapSpeed, setFlapSpeed] = useState(5); // Set initial flap speed
+  const [showSpeedDisplay, setShowSpeedDisplay] = useState(false);
+  const [scrollTimeout, setScrollTimeout] = useState(null);
 
   const adjustButterflyForScreenSize = () => {
     let screenScale = null
@@ -23,6 +24,33 @@ const Home = () => {
   }
 
   const [butterflyScale, butterflyPosition, butterflyRotation] = adjustButterflyForScreenSize()
+
+  useEffect(() => {
+    const handleScroll = (event) => {
+
+      // Show speed display on scroll
+      setShowSpeedDisplay(true);
+
+      // Clear previous timeout
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+
+      // Hide speed display after 1 second of inactivity
+      const timeout = setTimeout(() => {
+        setShowSpeedDisplay(false);
+      }, 1000);
+      setScrollTimeout(timeout);
+    };
+
+    window.addEventListener('wheel', handleScroll);
+    return () => {
+      window.removeEventListener('wheel', handleScroll);
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+    };
+  }, [flapSpeed, scrollTimeout]);
 
   return (
     <section className='w-full h-screen relative'>
@@ -44,6 +72,11 @@ const Home = () => {
           />
         </Suspense>
       </Canvas>
+      {showSpeedDisplay && (
+        <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-5 py-2.5 rounded-lg">
+          Flap Speed: {Math.round((flapSpeed / 30) * 100)}%
+        </div>
+      )}
     </section>
   )
 }
