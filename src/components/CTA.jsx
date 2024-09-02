@@ -7,7 +7,7 @@ const CTA = () => {
     <section className='flex-col mt-4'>
       <div className='flex items-center mb-2'>
         <p className='cta-text'>Have any job opportunities? <br className='sm:block hidden'/>
-        I would love to hear about them!</p>
+        I would love to talk about them!</p>
         <Link to='/contact' className='btn'>Contact</Link>
       </div>
 
