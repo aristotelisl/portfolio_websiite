@@ -73,11 +73,13 @@ const Home = () => {
         </Suspense>
       </Canvas>
       {showSpeedDisplay && (
-        <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-5 py-2.5 rounded-lg">
+        <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 text-white bg-blue-500 bg-opacity-50 px-1 py-1 rounded-lg font-poppins">
           Flap Speed: {Math.round((flapSpeed / 30) * 100)}%
         </div>
       )}
     </section>
+
+    
   )
 }
 

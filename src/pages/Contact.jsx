@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react'
 import emailjs from '@emailjs/browser'
+import { linkedin, github } from '../assets/icons'
+import { Link } from 'react-router-dom'
 
 const Contact = () => {
   const formRef = useRef(null)
@@ -48,6 +50,16 @@ const Contact = () => {
       <div className='flex-1 min-w-[50%] flex flex-col'>
         <h1 className='head-text'>Get in Touch</h1>
 
+        <div className='flex gap-3 items-center'>
+          <p className='font-semibold'>aristotelisl002@gmail.com</p>
+          <Link to='https://www.linkedin.com/in/aloucaides/' target="_blank" rel="noopener noreferrer">
+            <img src={linkedin} alt="github" className='w-6 h-6 object-contain ml-1'/>
+          </Link>
+          <Link to='https://github.com/aristotelisl/' target="_blank" rel="noopener noreferrer">
+            <img src={github} alt="github" className='w-6 h-6 object-contain ml-1'/>
+          </Link>
+        </div>
+
         <form
           className='w-full flex flex-col gap-7 mt-14'
           onSubmit={handleSubmit}
@@ -86,7 +98,7 @@ const Contact = () => {
               name='message'
               rows={4}
               className='textarea'
-              placeholder='Let me know how I can help you!'
+              placeholder='Feel free to reach out!'
               required
               value={form.message}
               onChange={handleChange}
