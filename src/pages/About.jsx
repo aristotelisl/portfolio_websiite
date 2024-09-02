@@ -38,8 +38,7 @@ const About = () => {
 
         <div className='mt-5 flex-col gap-3 text-slate-500'>
           <p>
-          Recent BSc Computer Science Graduate from the University of Southampton, currently located in Paphos, Cyprus. 
-          Interested in building applications and learning new technologies.
+            
           </p>
         </div>
 
